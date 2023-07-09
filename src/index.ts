@@ -1,27 +1,23 @@
-type TUnique = Object & {
-    [key: string]: number;
-};
+type TUnique = Map<string, number>;
 
 const findUniqueFromEntity = (arr: string[] | string): string => {
-    const unique: TUnique = {};
-    for (let i = 0; i < arr.length; i++) {
-        const item = arr[i];
+    const unique: TUnique = new Map();
+    const items = Array.isArray(arr) ? arr : [arr];
 
-        if (unique[item]) {
-            unique[item]++;
-        } else {
-            unique[item] = 1;
+    for (const item of items) {
+        for (const letter of item) {
+            unique.set(letter, (unique.get(letter) || 0) + 1);
         }
     }
-    for (const key in unique) {
-        if (unique[key] === 1) {
+    for (const [key, value] of unique) {
+        if (value === 1) {
             return key;
         }
     }
     return "there is not what is needed";
 };
 
-const findUniqueLetter = (str: string) => {
+const findUniqueLetter = (str: string): string => {
     const words = str.split(/[.,:;\s-!?'"()]+/);
     const uniqueInWords = words.map((item) => findUniqueFromEntity(item));
 
